@@ -13,7 +13,7 @@ module Growlyflash
       private
 
       def use_growlyflash(options = {})
-        append_after_action :flash_to_headers, options.reverse_merge(if: "request.xhr?")
+        append_after_action :flash_to_headers, options.reverse_merge(if: Proc.new {|controller| controller.request.xhr?})
       end
 
       def skip_growlyflash(options = {})
@@ -26,7 +26,7 @@ module Growlyflash
     # Dumps available messages to headers and discards them to prevent appear
     # it again after refreshing a page
     def flash_to_headers
-      response.headers['X-Message'] = URI.escape(growlyhash(true).to_json)
+      response.headers['X-Message'] = CGI.escape(growlyhash(true).to_json)
       growlyhash.each_key { |k| flash.discard(k) }
     end
 
