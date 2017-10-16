@@ -26,7 +26,7 @@ module Growlyflash
     # Dumps available messages to headers and discards them to prevent appear
     # it again after refreshing a page
     def flash_to_headers
-      response.headers['X-Message'] = CGI.escape(growlyhash(true).to_json)
+      response.headers['X-Message'] = growlyhash(true).to_json.html_safe
       growlyhash.each_key { |k| flash.discard(k) }
     end
 
